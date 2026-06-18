@@ -1,0 +1,1 @@
+"""Maritime vacancy scraper package."""
