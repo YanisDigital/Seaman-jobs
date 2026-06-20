@@ -66,6 +66,10 @@ class CloudflareBrowser:
             )
         self._pw = sync_playwright().start()
         self._browser = self._pw.chromium.launch(
+            # channel="chromium" — использовать ПОЛНЫЙ Chromium и для headless, и для
+            # headful. Иначе Playwright 1.49+ в headless берёт отдельный
+            # chromium-headless-shell (+267 МБ к сборке). Так нужен один браузер.
+            channel="chromium",
             headless=self.headless,
             args=[
                 "--disable-blink-features=AutomationControlled",

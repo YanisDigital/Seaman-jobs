@@ -7,6 +7,7 @@ from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup
 
+from ..http_client import HttpError
 from ..models import Vacancy
 from .base import BaseScraper, clean, split_position_vessel, text_block
 
@@ -26,7 +27,13 @@ class CrewellScraper(BaseScraper):
             if self._page_limit_reached(page) or page > _HARD_PAGE_CAP:
                 break
             url = self.LIST_URL.format(page=page)
-            soup = self.http.get_soup(url)
+            try:
+                soup = self.http.get_soup(url)
+            except HttpError as exc:
+                self.log.warning(
+                    "остановка на странице %d (%s) — сохраняю собранное с предыдущих страниц",
+                    page, exc)
+                break
             items = soup.select("div.vacancy-item[data-item-id]")
             if not items:
                 break

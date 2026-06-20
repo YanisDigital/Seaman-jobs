@@ -5,6 +5,7 @@ import re
 from typing import Iterator, Set
 from urllib.parse import urljoin
 
+from ..http_client import HttpError
 from ..models import Vacancy
 from .base import BaseScraper, clean, text_block
 
@@ -28,7 +29,13 @@ class UkrCrewingScraper(BaseScraper):
         while True:
             if self._page_limit_reached(page) or page > _HARD_PAGE_CAP:
                 break
-            soup = self.http.get_soup(self._list_url(page))
+            try:
+                soup = self.http.get_soup(self._list_url(page))
+            except HttpError as exc:
+                self.log.warning(
+                    "остановка на странице %d (%s) — сохраняю собранное с предыдущих страниц",
+                    page, exc)
+                break
             rows = [a.find_parent("tr") for a in soup.select("a.var")]
             rows = [r for r in rows if r is not None]
             if not rows:

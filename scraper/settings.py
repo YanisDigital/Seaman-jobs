@@ -12,7 +12,7 @@ import yaml
 class RequestSettings:
     delay_seconds: float = 1.0
     timeout: int = 25
-    retries: int = 3
+    retries: int = 4
     max_pages_per_site: int = 0
     fetch_details: bool = True
 

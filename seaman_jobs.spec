@@ -14,9 +14,20 @@ from PyInstaller.utils.hooks import collect_data_files, collect_submodules
 # Папка с браузерами playwright (создаётся командой `playwright install chromium`).
 _ms = os.path.join(os.environ.get("LOCALAPPDATA", ""), "ms-playwright")
 
+# Не упаковываем то, что наш код не использует, — экономит ~270 МБ:
+#   chromium_headless_shell — не нужен, т.к. launch(channel="chromium") гоняет
+#     полный Chromium и в headless (см. scraper/playwright_fetch.py);
+#   ffmpeg — только для записи видео.
+_SKIP_PREFIXES = ("chromium_headless_shell", "ffmpeg")
+
 datas = []
 if os.path.isdir(_ms):
-    datas.append((_ms, "ms-playwright"))      # упаковываем Chromium целиком
+    for entry in sorted(os.listdir(_ms)):
+        if entry.startswith(_SKIP_PREFIXES):
+            continue
+        src = os.path.join(_ms, entry)
+        dest = "ms-playwright/" + entry if os.path.isdir(src) else "ms-playwright"
+        datas.append((src, dest))
 else:
     print("WARNING: ms-playwright не найден — maritime-zone в .exe работать не будет. "
           "Сначала выполните: python -m playwright install chromium")
