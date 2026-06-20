@@ -6,3 +6,8 @@ PyYAML>=6.0
 # Optional — only needed for maritime-zone.com (Cloudflare-protected).
 # After installing, run: python -m playwright install chromium
 playwright>=1.40
+
+# Build-only — для сборки автономного .exe (build.bat). Не нужны для обычного запуска.
+pyinstaller>=6.0
+pyinstaller-hooks-contrib>=2024.0
+

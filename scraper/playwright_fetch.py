@@ -7,10 +7,30 @@
 from __future__ import annotations
 
 import logging
+import os
+import sys
 import time
 from typing import Optional
 
 log = logging.getLogger("scraper.playwright")
+
+
+def _configure_bundled_browser() -> None:
+    """В собранном .exe указать playwright на упакованный Chromium.
+
+    PyInstaller кладёт данные в каталог bundle (`sys._MEIPASS`). Если там есть
+    папка `ms-playwright`, направляем туда PLAYWRIGHT_BROWSERS_PATH — иначе
+    playwright ищет браузер в профиле пользователя (которого на чужом ПК нет).
+    """
+    if os.environ.get("PLAYWRIGHT_BROWSERS_PATH"):
+        return
+    if not getattr(sys, "frozen", False):
+        return
+    base = getattr(sys, "_MEIPASS", None) or os.path.dirname(sys.executable)
+    bundled = os.path.join(base, "ms-playwright")
+    if os.path.isdir(bundled):
+        os.environ["PLAYWRIGHT_BROWSERS_PATH"] = bundled
+        log.info("Использую упакованный браузер: %s", bundled)
 
 _UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
        "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
@@ -36,6 +56,7 @@ class CloudflareBrowser:
         self._page = None
 
     def __enter__(self) -> "CloudflareBrowser":
+        _configure_bundled_browser()
         try:
             from playwright.sync_api import sync_playwright
         except ImportError as exc:  # noqa: F841
