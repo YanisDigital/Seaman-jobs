@@ -1,0 +1,16 @@
+# Зависимости десктоп-версии (GUI) и сборки автономного .exe.
+# Включает браузер для maritime-zone и инструменты PyInstaller.
+# Установка:  python -m pip install -r requirements-desktop.txt
+#             python -m playwright install chromium
+requests>=2.31
+beautifulsoup4>=4.12
+lxml>=4.9
+openpyxl>=3.1
+PyYAML>=6.0
+
+# maritime-zone (Cloudflare) — нужен браузер:
+playwright>=1.40
+
+# Сборка автономного .exe (build.bat):
+pyinstaller>=6.0
+pyinstaller-hooks-contrib>=2024.0

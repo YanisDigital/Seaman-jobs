@@ -35,18 +35,41 @@
 **описание/детали** со страницы вакансии (флаг, DWT, тип двигателя, судовладелец,
 требования, для ukrcrewing — контактный телефон и e-mail).
 
-## Требования
+## Облачная версия (Streamlit) — тест по ссылке
+
+Лёгкая веб-версия для **crewell + ukrcrewing** (без браузера) — открывается по ссылке,
+ничего ставить не нужно. maritime-zone в облако не входит (Cloudflare) — он в десктоп-`.exe`.
+
+Локальный запуск (нужен **Python 3.10+**; Streamlit не ставится на 3.9.7):
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m streamlit run streamlit_app.py
+```
+
+> Для деплоя версия Python на вашем ПК неважна — Streamlit Cloud использует свой
+> Python 3.11+. Локальный запуск нужен лишь для предпросмотра.
+
+Деплой на бесплатный Streamlit Community Cloud:
+1. Зайти на [share.streamlit.io](https://share.streamlit.io) под своим GitHub.
+2. New app → репозиторий `YanisDigital/Seaman-jobs`, ветка `main`, main file
+   `streamlit_app.py` → **Deploy**.
+3. Получаете публичную ссылку — её и отправляете знакомым.
+
+Streamlit Cloud сам ставит зависимости из `requirements.txt` (он намеренно лёгкий, без
+playwright/pyinstaller).
+
+## Требования (десктоп)
 
 - Python 3.9+
-- Зависимости из `requirements.txt`
+- Зависимости из `requirements-desktop.txt`
 - Для maritime-zone — браузер Chromium (через playwright)
 
-## Установка (Windows)
+## Установка (Windows, десктоп)
 
 ```powershell
 # из папки проекта
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements-desktop.txt
 # браузер для maritime-zone (Cloudflare):
 .\.venv\Scripts\python.exe -m playwright install chromium
 ```
@@ -104,7 +127,7 @@ maritime_zone:
 
 ```powershell
 # один раз — окружение и браузер:
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements-desktop.txt
 .\.venv\Scripts\python.exe -m playwright install chromium
 # собрать:
 .\build.bat

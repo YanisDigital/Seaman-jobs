@@ -1,6 +1,7 @@
 """Запись вакансий в .xlsx с кликабельными ссылками."""
 from __future__ import annotations
 
+import io
 import logging
 from dataclasses import asdict
 from datetime import datetime
@@ -29,19 +30,14 @@ _HEADER_FONT = Font(bold=True, color="FFFFFF")
 _LINK_FONT = Font(color="0563C1", underline="single")
 
 
-def write_xlsx(vacancies: List[Vacancy], output_dir: str) -> Path:
-    out_dir = Path(output_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
-    stamp = datetime.now().strftime("%Y-%m-%d_%H%M")
-    path = out_dir / f"vacancies_{stamp}.xlsx"
-
+def build_workbook(vacancies: List[Vacancy]) -> Workbook:
+    """Собрать книгу Excel: шапка, строки, кликабельные ссылки, автофильтр."""
     wb = Workbook()
     ws = wb.active
     ws.title = "Vacancies"
 
     keys = [k for k, _ in COLUMNS]
     headers = [h for _, h in COLUMNS]
-    url_col = keys.index("url") + 1  # 1-based
 
     # Заголовок.
     for col, title in enumerate(headers, start=1):
@@ -74,7 +70,22 @@ def write_xlsx(vacancies: List[Vacancy], output_dir: str) -> Path:
     last_col = get_column_letter(len(keys))
     last_row = len(vacancies) + 1
     ws.auto_filter.ref = f"A1:{last_col}{last_row}"
+    return wb
 
-    wb.save(path)
+
+def write_xlsx(vacancies: List[Vacancy], output_dir: str) -> Path:
+    """Сохранить вакансии в файл .xlsx (для CLI/GUI). Вернуть путь."""
+    out_dir = Path(output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    stamp = datetime.now().strftime("%Y-%m-%d_%H%M")
+    path = out_dir / f"vacancies_{stamp}.xlsx"
+    build_workbook(vacancies).save(path)
     log.info("Saved %d vacancies -> %s", len(vacancies), path)
     return path
+
+
+def workbook_bytes(vacancies: List[Vacancy]) -> bytes:
+    """Книга Excel как байты (для скачивания в вебе, без записи на диск)."""
+    buffer = io.BytesIO()
+    build_workbook(vacancies).save(buffer)
+    return buffer.getvalue()

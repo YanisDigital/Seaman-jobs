@@ -72,13 +72,15 @@ def resolve_sites(settings: Settings, sites: Optional[Sequence[str]]) -> List[st
     return chosen
 
 
-def run_scrape(settings: Settings,
-               sites: Optional[Sequence[str]] = None,
-               max_pages: Optional[int] = None,
-               fetch_details: Optional[bool] = None,
-               output_dir: Optional[str] = None,
-               should_stop: StopFlag = None) -> "Tuple[List[Vacancy], Path]":
-    """Собрать вакансии с выбранных сайтов и записать Excel. Вернуть (вакансии, путь)."""
+def collect_all(settings: Settings,
+                sites: Optional[Sequence[str]] = None,
+                max_pages: Optional[int] = None,
+                fetch_details: Optional[bool] = None,
+                should_stop: StopFlag = None) -> List[Vacancy]:
+    """Собрать и отфильтровать вакансии с выбранных сайтов (без записи на диск).
+
+    Используется и CLI/GUI (через run_scrape), и веб-версией (Streamlit).
+    """
     chosen = resolve_sites(settings, sites)
     if not chosen:
         raise ValueError("Не выбрано ни одного известного сайта. Доступно: "
@@ -87,7 +89,6 @@ def run_scrape(settings: Settings,
         max_pages = settings.request.max_pages_per_site
     if fetch_details is None:
         fetch_details = settings.request.fetch_details
-    output_dir = output_dir or settings.output_dir
 
     http = HttpClient(timeout=settings.request.timeout,
                       delay_seconds=settings.request.delay_seconds,
@@ -106,6 +107,17 @@ def run_scrape(settings: Settings,
 
     if not all_matched:
         log.warning("Подходящих вакансий не найдено. Проверьте фильтры.")
-    path = write_xlsx(all_matched, output_dir)
+    return all_matched
+
+
+def run_scrape(settings: Settings,
+               sites: Optional[Sequence[str]] = None,
+               max_pages: Optional[int] = None,
+               fetch_details: Optional[bool] = None,
+               output_dir: Optional[str] = None,
+               should_stop: StopFlag = None) -> "Tuple[List[Vacancy], Path]":
+    """Собрать вакансии и записать Excel на диск. Вернуть (вакансии, путь)."""
+    all_matched = collect_all(settings, sites, max_pages, fetch_details, should_stop)
+    path = write_xlsx(all_matched, output_dir or settings.output_dir)
     log.info("Готово: %d вакансий -> %s", len(all_matched), path)
     return all_matched, path
