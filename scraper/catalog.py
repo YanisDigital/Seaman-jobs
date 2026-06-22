@@ -60,4 +60,5 @@ SITES: List[Tuple[str, str]] = [
     ("crewell.net", "crewell"),
     ("ukrcrewing.com.ua", "ukrcrewing"),
     ("maritime-zone.com", "maritime_zone"),
+    ("crewdata.com", "crewdata"),
 ]

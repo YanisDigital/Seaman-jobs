@@ -36,6 +36,7 @@ sites:
   - crewell
   - ukrcrewing
   - maritime_zone
+  - crewdata
 
 # Сетевые настройки и поведение скрейпера.
 request:

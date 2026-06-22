@@ -10,6 +10,7 @@ v0.1.0-alpha
 - [crewell.net](https://crewell.net/en/)
 - [ukrcrewing.com.ua](https://ukrcrewing.com.ua/en/)
 - [maritime-zone.com](https://maritime-zone.com/en/) — за защитой Cloudflare (см. ниже)
+- [crewdata.com](https://crewdata.com/jobs.php?lang=rus) — очень большой агрегатор, всегда используйте лимит страниц
 
 Пользоваться можно двумя способами: через **графическое окно** (просто, для всех,
 см. ниже) или из **командной строки** (для продвинутых).

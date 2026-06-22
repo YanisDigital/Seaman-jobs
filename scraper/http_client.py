@@ -95,5 +95,9 @@ class HttpClient:
 
     def get_soup(self, url: str, *, referer: Optional[str] = None) -> BeautifulSoup:
         resp = self.get(url, referer=referer)
-        resp.encoding = resp.apparent_encoding or resp.encoding
+        # Доверяем charset из заголовка (requests уже выставил resp.encoding);
+        # угадываем кодировку только если сервер её не прислал — иначе угадайка
+        # может испортить кириллицу (mojibake), хотя страница в UTF-8.
+        if "charset=" not in resp.headers.get("Content-Type", "").lower():
+            resp.encoding = resp.apparent_encoding or resp.encoding
         return BeautifulSoup(resp.text, "lxml")
