@@ -44,7 +44,10 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    # Тяжёлые библиотеки, которые приложению не нужны (могут затягиваться
+    # как необязательные зависимости openpyxl/прочих). Исключаем ради размера.
+    excludes=["numpy", "PIL", "pandas", "pyarrow", "altair",
+              "streamlit", "matplotlib", "IPython", "scipy"],
     noarchive=False,
 )
 pyz = PYZ(a.pure)
