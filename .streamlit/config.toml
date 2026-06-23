@@ -1,0 +1,12 @@
+# Базовая тема Streamlit (цвета виджетов). Тонкая настройка — в CSS внутри
+# streamlit_app.py. Тёмная «глубоководная» палитра с бирюзовым акцентом.
+[theme]
+base = "dark"
+primaryColor = "#36e0c8"
+backgroundColor = "#0a0f1a"
+secondaryBackgroundColor = "#111a2b"
+textColor = "#e6eef6"
+font = "sans serif"
+
+[client]
+toolbarMode = "minimal"
