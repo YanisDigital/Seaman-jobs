@@ -37,6 +37,7 @@ sites:
   - ukrcrewing
   - maritime_zone
   - crewdata
+  - crewplanet
 
 # Сетевые настройки и поведение скрейпера.
 request:

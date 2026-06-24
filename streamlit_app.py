@@ -20,8 +20,9 @@ from scraper.settings import MaritimeZoneSettings, RequestSettings, Settings
 
 XLSX_MIME = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
-# Облачная версия — только сайты без браузера.
-_CLOUD_SITES = [(label, key) for label, key in catalog.SITES if key != "maritime_zone"]
+# Сайты только для десктоп-версии (.exe) — в облако не выводим.
+_DESKTOP_ONLY = {"maritime_zone", "crewplanet"}
+_CLOUD_SITES = [(label, key) for label, key in catalog.SITES if key not in _DESKTOP_ONLY]
 _POS = {label: kws for label, kws in catalog.POSITIONS}
 _VES = {label: kws for label, kws in catalog.VESSEL_TYPES}
 

@@ -4,3 +4,8 @@ __pycache__/
 *.pyc
 build/
 dist/
+
+# Личные документы / временные файлы Office
+*.docx
+*.xlsx
+~$*

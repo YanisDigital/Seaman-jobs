@@ -6,6 +6,7 @@ from typing import Dict, Type
 from .base import BaseScraper
 from .crewdata import CrewDataScraper
 from .crewell import CrewellScraper
+from .crewplanet import CrewPlanetScraper
 from .maritime_zone import MaritimeZoneScraper
 from .ukrcrewing import UkrCrewingScraper
 
@@ -15,4 +16,5 @@ SCRAPERS: "Dict[str, Type[BaseScraper]]" = {
     UkrCrewingScraper.name: UkrCrewingScraper,
     MaritimeZoneScraper.name: MaritimeZoneScraper,
     CrewDataScraper.name: CrewDataScraper,
+    CrewPlanetScraper.name: CrewPlanetScraper,
 }
