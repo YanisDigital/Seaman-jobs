@@ -11,6 +11,8 @@ import logging
 from dataclasses import asdict
 
 import streamlit as st
+import streamlit.components.v1 as components
+
 
 from scraper import catalog
 from scraper.excel_writer import workbook_bytes
@@ -64,12 +66,51 @@ def _run(settings: Settings):
         status.update(label=f"Готово: найдено {len(vacs)}", state="complete", expanded=False)
     return vacs
 
+def track_conversion():
+    """Inject PostHog/Analytics event using HTML component"""
+    tracking_code = """
+    <script>
+    // Simulate tracking pixel / conversion logic
+    console.log("Tracking event: WTP View or Click");
+    </script>
+    """
+    components.html(tracking_code, width=0, height=0)
+
+def show_landing_offer():
+    """Shows the willingness to pay offer (Pro version)"""
+    st.markdown("---")
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        st.subheader("🚀 Seaman-jobs Pro (Early Access)")
+        st.markdown(
+            "Upgrade to Pro and get:\n"
+            "- **Unlimited Background Tracking**\n"
+            "- **Instant Telegram Notifications**\n"
+            "- **Export to Google Sheets directly**\n"
+        )
+    with col2:
+        st.info("**Only $9 / month**")
+        if st.button("Unlock Pro Now", type="primary", use_container_width=True):
+            st.session_state["clicked_pro"] = True
+            track_conversion()
+            st.markdown("[Complete Checkout on Polar.sh](https://polar.sh/seaman-jobs-pro)")
+    st.markdown("---")
+    
+    # Track the view of the offer
+    if "offer_viewed" not in st.session_state:
+        st.session_state["offer_viewed"] = True
+        track_conversion()
+
+
+
 
 def main() -> None:
     st.set_page_config(page_title="Поиск вакансий моряков", page_icon="⚓", layout="wide")
     st.title("⚓ Поиск вакансий моряков")
     st.caption("Отметьте должности и типы судов, выберите сайты и нажмите «Старт». "
                "Результат — таблица и файл Excel со ссылками.")
+
+    show_landing_offer()
 
     col1, col2 = st.columns(2)
     with col1:
